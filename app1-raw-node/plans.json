@@ -1,0 +1,28 @@
+[
+  {
+    "name": "Beginner Full Body",
+    "duration_weeks": 4,
+    "days_per_week": 3,
+    "focus": "strength and endurance",
+    "exercises": ["squats", "push-ups", "rows", "planks"]
+  },
+  {
+    "name": "Intermediate Strength",
+    "duration_weeks": 6,
+    "days_per_week": 4,
+    "focus": "muscle building",
+    "exercises": ["bench press", "deadlifts", "overhead press", "pull-ups"]
+  },
+  {
+    "name": "Advanced HIIT",
+    "duration_weeks": 8,
+    "days_per_week": 5,
+    "focus": "cardio and fat loss",
+    "exercises": [
+      "burpees",
+      "kettlebell swings",
+      "box jumps",
+      "mountain climbers"
+    ]
+  }
+]
