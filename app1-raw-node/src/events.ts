@@ -28,5 +28,5 @@ function registerUser(id: number, name: string): void {
 registerUser(1, "Kuldeep");
 registerUser(2, "Yadav");
 registerUser(3, "Sish");
-registerUser(4, "ram");
+registerUser(4, "ramm");
 registerUser(5, "Kumar");
