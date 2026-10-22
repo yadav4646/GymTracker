@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-const healthRouter = Router();
+export const healthRouter = Router();
 
 healthRouter.get("/health", (_req, res) => {
   res.sendStatus(200).json({
