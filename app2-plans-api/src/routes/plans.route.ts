@@ -110,3 +110,20 @@ allPlans.patch("/plans/:id", (_req, res) => {
         data: plans,
     });
 });
+
+allPlans.delete("/plans/:id", (_req, res) => {
+    const id = Number(_req.params.id);
+    // console.log(id);
+    const obj = plans.findIndex((plan) => {
+        return plan.id === id;
+    });
+    // console.log(obj);
+    if (obj != -1) {
+        plans.splice(obj, 1);
+    }
+    res.status(201).json({
+        success: true,
+        message: "Deleted succesfully",
+        data: plans,
+    });
+});
