@@ -4,6 +4,7 @@ export type Plan = {
     category: "strength" | "cardio" | "flexibility";
     durationMinutes: number;
     difficulty: "beginner" | "intermediate" | "advanced";
+    price: number;
 };
 
 export const plans: Plan[] = [
@@ -13,6 +14,7 @@ export const plans: Plan[] = [
         category: "strength",
         durationMinutes: 45,
         difficulty: "beginner",
+        price: 10,
     },
     {
         id: 2,
@@ -20,13 +22,16 @@ export const plans: Plan[] = [
         category: "cardio",
         durationMinutes: 30,
         difficulty: "intermediate",
+        price: 20,
     },
     {
         id: 3,
         name: "Evening Flexibility",
         category: "flexibility",
+        
         durationMinutes: 20,
         difficulty: "beginner",
+        price: 15,
     },
 ];
 
@@ -35,6 +40,21 @@ import { request, Router } from "express";
 export const allPlans = Router();
 
 allPlans.get("/plans", (_req, res) => {
+    const maxPrice = Number(_req.query.maxPrice);
+    console.log(maxPrice);
+    const maxPricePlan = plans.filter((plan) => {
+        return plan.price > maxPrice;
+    });
+    // console.log(maxPricePlan);
+
+    if (_req.query.maxPrice) {
+        res.status(200).json({
+            success: true,
+            message: "The greatest in the list",
+            data: maxPricePlan,
+        });
+    }
+
     res.status(200).json({
         success: true,
         message: "this is the list",
