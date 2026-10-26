@@ -28,7 +28,7 @@ export const plans: Plan[] = [
         id: 3,
         name: "Evening Flexibility",
         category: "flexibility",
-        
+
         durationMinutes: 20,
         difficulty: "beginner",
         price: 15,

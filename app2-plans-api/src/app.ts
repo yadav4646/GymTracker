@@ -3,6 +3,7 @@
 import express from "express";
 import { errorHandler } from "./middlewares/errorHandler";
 import { notFound } from "./middlewares/notFound";
+import { consoleLogger } from "./middlewares/consoleLogger";
 import cors from "cors";
 import { apiRouter } from "./routes";
 export function createApp() {
@@ -10,6 +11,7 @@ export function createApp() {
     app.use(cors());
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
+    app.use(consoleLogger);
     app.use("/api", apiRouter);
     app.use(notFound);
     app.use(errorHandler);
