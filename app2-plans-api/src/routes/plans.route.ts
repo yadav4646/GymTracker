@@ -1,7 +1,7 @@
 import { request, Router } from "express";
 import z from "zod";
 
-export const PlanSchema = z.object({
+export const PlanSchema = z.strictObject({
     id: z.number(),
     name: z.string("Should be a string").nonempty(),
     category: z.enum(["strength", "cardio", "flexibility"]),
@@ -14,6 +14,14 @@ export type Plan = z.infer<typeof PlanSchema>;
 
 export const createPlanRequestSchema = PlanSchema.omit({
     id: true,
+});
+
+export const patchNamePlan = PlanSchema.omit({
+    id: true,
+    category: true,
+    durationMinutes: true,
+    difficulty: true,
+    price: true,
 });
 
 export const plans: Plan[] = [
@@ -91,7 +99,7 @@ allPlans.get("/plans/:id", (_req, res) => {
 
 allPlans.post("/plans", (_req, res) => {
     const request = createPlanRequestSchema.safeParse(_req.body);
-    console.log(request);
+    // console.log(request);
     if (!request.success) {
         return res.status(400).json({
             success: false,
@@ -119,30 +127,38 @@ allPlans.post("/plans", (_req, res) => {
 allPlans.patch("/plans/:id", (_req, res) => {
     const id = Number(_req.params.id);
     // console.log(id);
-    const update = _req.body.name;
-    // console.log(update);
-    //need to find the object which conatins the id
-    const obj = plans.findIndex((plan) => plan.id === id);
-    // console.log(obj);
-    if (obj === -1) {
-        return res.status(404).json({
+    const update = patchNamePlan.safeParse(_req.body);
+
+    if (!update.success) {
+        return res.status(400).json({
             success: false,
-            message: "No plan",
+            message: update.error.issues.map((issue) => issue.message),
+        });
+    } else {
+        const obj = plans.findIndex((plan) => plan.id === id);
+        // console.log(obj);
+        if (obj === -1) {
+            return res.status(404).json({
+                success: false,
+                message: "No plan",
+            });
+        }
+        // spread that object
+        // const updatePlan = { ...obj, name: update };
+        // console.log(updatePlan);
+        //index mutation
+        plans[obj] = {
+            ...plans[obj],
+            name: update.data.name,
+        };
+        res.status(201).json({
+            success: true,
+            message: `Updated the ${id} with the new name`,
+            data: plans,
         });
     }
-    // spread that object
-    // const updatePlan = { ...obj, name: update };
-    // console.log(updatePlan);
-    //index mutation
-    plans[obj] = {
-        ...plans[obj],
-        name: update,
-    };
-    res.status(201).json({
-        success: true,
-        message: `Updated the ${id} with the new name`,
-        data: plans,
-    });
+    // console.log(update);
+    //need to find the object which conatins the id
 });
 
 allPlans.delete("/plans/:id", (_req, res) => {
