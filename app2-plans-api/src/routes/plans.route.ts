@@ -1,11 +1,20 @@
-export type Plan = {
-    id: number;
-    name: string;
-    category: "strength" | "cardio" | "flexibility";
-    durationMinutes: number;
-    difficulty: "beginner" | "intermediate" | "advanced";
-    price: number;
-};
+import { request, Router } from "express";
+import z from "zod";
+
+export const PlanSchema = z.object({
+    id: z.number(),
+    name: z.string("Should be a string").nonempty(),
+    category: z.enum(["strength", "cardio", "flexibility"]),
+    durationMinutes: z.number("Should be a number").positive().int(),
+    difficulty: z.enum(["beginner", "intermediate", "advanced"]),
+    price: z.number("Should be a number").positive(),
+});
+
+export type Plan = z.infer<typeof PlanSchema>;
+
+export const createPlanRequestSchema = PlanSchema.omit({
+    id: true,
+});
 
 export const plans: Plan[] = [
     {
@@ -34,8 +43,6 @@ export const plans: Plan[] = [
         price: 15,
     },
 ];
-
-import { request, Router } from "express";
 
 export const allPlans = Router();
 
@@ -83,24 +90,30 @@ allPlans.get("/plans/:id", (_req, res) => {
 });
 
 allPlans.post("/plans", (_req, res) => {
-    const request = _req.body;
+    const request = createPlanRequestSchema.safeParse(_req.body);
     console.log(request);
-    
-    const getLastId = plans.map((plan) => {
-        return plan.id;
-    });
-    const maxId = Math.max(...getLastId);
-    // console.log(maxId);
-    const newId = maxId + 1;
-    // const newPlan = (request.id = newId);
-    const onj = { ...request, id: newId };
-    plans.push(onj);
+    if (!request.success) {
+        return res.status(400).json({
+            success: false,
+            message: request.error.issues.map((issue) => issue.message),
+        });
+    } else {
+        const getLastId = plans.map((plan) => {
+            return plan.id;
+        });
+        const maxId = Math.max(...getLastId);
+        // console.log(maxId);
+        const newId = maxId + 1;
+        // const newPlan = (request.id = newId);
+        const onj = { ...request.data, id: newId };
+        plans.push(onj);
 
-    res.status(201).json({
-        success: true,
-        message: "Plan created",
-        data: plans,
-    });
+        res.status(201).json({
+            success: true,
+            message: "Plan created",
+            data: plans,
+        });
+    }
 });
 
 allPlans.patch("/plans/:id", (_req, res) => {
