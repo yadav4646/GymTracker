@@ -7,6 +7,5 @@ export function consoleLogger(
     next: NextFunction,
 ): void {
     logger.info({ method: _req.method, url: _req.url });
-
     next();
 }

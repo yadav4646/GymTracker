@@ -84,7 +84,8 @@ allPlans.get("/plans/:id", (_req, res) => {
 
 allPlans.post("/plans", (_req, res) => {
     const request = _req.body;
-    // console.log(request);
+    console.log(request);
+    
     const getLastId = plans.map((plan) => {
         return plan.id;
     });
