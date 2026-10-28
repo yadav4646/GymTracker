@@ -54,7 +54,7 @@ export const plans: Plan[] = [
 
 export const allPlans = Router();
 
-allPlans.get("/plans", (_req, res) => {
+allPlans.get("/plans", (_req, res, next) => {
     const maxPrice = Number(_req.query.maxPrice);
     console.log(maxPrice);
     const maxPricePlan = plans.filter((plan) => {
