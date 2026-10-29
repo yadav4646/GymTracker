@@ -1,0 +1,32 @@
+services:
+  api:
+    build: .
+    container_name: members-api
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:18
+    container_name: members-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: members_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: members_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - members_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U members_user -d members_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  members_data:
